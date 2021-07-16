@@ -1,5 +1,5 @@
 const API_KEY =
-  "7c42c280085e60a9906f19cb54cfaa74e24a01cd0522d6ebe84280d0675a9409";
+  "e903db0abc2f36912014704cfbf2a5d6d7f85d95f224e8300ed4aeb4f74d68e3";
 
 const tickersHandlers = new Map();
 const socket = new WebSocket(
@@ -9,7 +9,9 @@ const socket = new WebSocket(
 const AGGREGATE_INDEX = "5";
 
 export const invalidTickers = new Set();
+
 let BTC_PRICE;
+
 socket.addEventListener("message", e => {
   const {
     TYPE: type,
@@ -88,9 +90,11 @@ export const unsubscribeFromTicker = ticker => {
   unsubscribeFromTickerOnWs(ticker);
 };
 
-let url = `https://min-api.cryptocompare.com/data/all/coinlist?summary=true&api_key=7c42c280085e60a9906f19cb54cfaa74e24a01cd0522d6ebe84280d0675a9409`;
+let url = `https://min-api.cryptocompare.com/data/all/coinlist?summary=true&api_key= ${API_KEY}`;
 
 export let getCoinsList = fetch(url)
   .then(cl => (cl = cl.json()))
   .then(cl => (cl = Object.keys(cl.Data)))
   .then(cl => (cl = cl.map(i => i.toUpperCase())));
+
+window.tickersHandlers = tickersHandlers;

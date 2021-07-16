@@ -3,12 +3,13 @@
     <div class="flex">
       <div class="max-w-xs">
         <label for="wallet" class="block text-sm font-medium text-gray-700">
-          Тикер {{ ticker }}
+          Тикер
         </label>
         <div class="mt-1 relative rounded-md shadow-md">
           <input
             v-model="ticker"
             @keydown.enter="add"
+            @input="emptyInput = false"
             type="text"
             name="wallet"
             id="wallet"
@@ -29,9 +30,12 @@
             {{ coin }}
           </span>
         </div>
-        <regular-button @buttonClick="add"> <plus-sign /> Add </regular-button>
+        <BaseButton @buttonClick="add"> <SignPlus /> Add </BaseButton>
         <div v-if="alreadyAdd" class="text-sm text-red-600">
           Такой тикер уже добавлен
+        </div>
+        <div v-else-if="emptyInput" class="text-sm text-red-600">
+          Пустое поле добавить нельзя
         </div>
       </div>
     </div>
@@ -39,11 +43,11 @@
 </template>
 
 <script>
-import PlusSign from "./PlusSign.vue";
-import RegularButton from "./RegularButton.vue";
+import SignPlus from "./UiComponents/SignPlus";
+import BaseButton from "./UiComponents/BaseButton.vue";
 
 export default {
-  components: { RegularButton, PlusSign },
+  components: { SignPlus, BaseButton },
   props: {
     coinsList: Array,
     alreadyAdd: Boolean,
@@ -52,6 +56,7 @@ export default {
   data() {
     return {
       ticker: "",
+      emptyInput: false,
     };
   },
 
@@ -72,6 +77,7 @@ export default {
 
     add() {
       if (this.ticker.length === 0) {
+        this.emptyInput = true;
         return;
       }
       this.$emit("add-ticker", this.ticker);

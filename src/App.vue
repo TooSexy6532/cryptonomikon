@@ -1,56 +1,29 @@
 <template>
   <div class="container mx-auto flex flex-col items-center bg-gray-100 p-4">
-    <div
-      class="fixed w-100 h-100 opacity-80 bg-purple-800 inset-0 z-50 flex items-center justify-center"
-      v-if="false"
-    >
-      <svg
-        class="animate-spin -ml-1 mr-3 h-12 w-12 text-white"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-      >
-        <circle
-          class="opacity-25"
-          cx="12"
-          cy="12"
-          r="10"
-          stroke="currentColor"
-          stroke-width="4"
-        ></circle>
-        <path
-          class="opacity-75"
-          fill="currentColor"
-          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-        ></path>
-      </svg>
-    </div>
-
+    <BaseSpiner v-if="toggleSpiner" />
     <div class="container">
-      <add-ticker
+      <TickerAdd
         @add-ticker="add"
         @input="alreadyAdd = false"
-        v-bind:coinsList="allCoinsList"
-        v-bind:alreadyAdd="alreadyAdd"
+        :coins-list="allCoinsList"
+        :already-add="alreadyAdd"
       />
 
-      <navigation-panel :tickers="tickers" @filter-change="getTickerList" />
+      <NavigationPanel :tickers="tickers" @filter-change="getTickerList" />
 
       <template v-if="tickers.length">
-        <hr class="w-full border-t border-gray-600 my-4" />
-        <ticker-render
-          :tickerList="paginatedTickers"
-          :selectedTicker="selectedTicker"
-          @select="select"
+        <TickersList
+          :ticker-list="paginatedTickers"
+          :selected-ticker="selectedTicker"
+          @select="setSelectedTicker"
           @remove="remove"
         />
-        <hr class="w-full border-t border-gray-600 my-4" />
       </template>
 
-      <show-graph
+      <TickerSelectedGraph
         @removeSelection="selectedTicker = null"
         :graph="graph"
-        :selectedTicker="selectedTicker"
+        :selected-ticker="selectedTicker"
       />
     </div>
   </div>
@@ -63,31 +36,31 @@ import {
   subscribeToTicker,
   unsubscribeFromTicker,
 } from "./api";
-import AddTicker from "./components/AddTicker";
-import ShowGraph from "./components/ShowGraph";
+import TickerAdd from "./components/TickerAdd";
+import TickerSelectedGraph from "./components/TickerSelectedGraph";
 import NavigationPanel from "./components/NavigationPanel";
-import TickerRender from "./components/TickerRender.vue";
+import TickersList from "./components/TickersList.vue";
+import BaseSpiner from "./components/UiComponents/BaseSpiner.vue";
+
 export default {
   name: "App",
 
   components: {
-    AddTicker,
-    ShowGraph,
+    TickerAdd,
+    TickerSelectedGraph,
     NavigationPanel,
-    TickerRender,
+    TickersList,
+    BaseSpiner,
   },
 
   data() {
     return {
+      toggleSpiner: false,
       tickers: [],
-
       alreadyAdd: false,
-
       invalidTickersList: invalidTickers,
       allCoinsList: null,
-
       paginatedTickers: [],
-
       graph: [],
       selectedTicker: null,
     };
@@ -112,13 +85,6 @@ export default {
   methods: {
     getTickerList(tickers) {
       this.paginatedTickers = tickers;
-    },
-
-    formatPrice(price) {
-      if (price === "-") {
-        return price;
-      }
-      return price > 1 ? price.toFixed(2) : price.toPrecision(2);
     },
 
     checkValid() {
@@ -149,6 +115,7 @@ export default {
       };
 
       if (!this.tickers.find(item => item.name === currentTicker.name)) {
+        this.alreadyAdd = false;
         this.tickers = [...this.tickers, currentTicker];
         this.filter = "";
         subscribeToTicker(currentTicker.name, newPrice =>
@@ -167,7 +134,7 @@ export default {
       unsubscribeFromTicker(removedTicker.name);
     },
 
-    select(ticker) {
+    setSelectedTicker(ticker) {
       this.graph = [];
       this.selectedTicker = ticker;
     },

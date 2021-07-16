@@ -1,12 +1,12 @@
 <template>
   <section>
-    <hr class="w-full border-t border-gray-600 my-4" />
-    <regular-button v-if="page > 1" @buttonClick="page = page - 1">
+    <BaseLineGray />
+    <BaseButton v-if="page > 1" @buttonClick="page = page - 1">
       Назад
-    </regular-button>
-    <regular-button v-if="hasNextPage" @buttonClick="page = page + 1">
+    </BaseButton>
+    <BaseButton v-if="hasNextPage" @buttonClick="page = page + 1">
       Вперед
-    </regular-button>
+    </BaseButton>
     <input
       v-model="filter"
       class="block w-full pr-10 border-gray-300 text-gray-900 focus:outline-none focus:ring-gray-500 focus:border-gray-500 sm:text-sm rounded-md"
@@ -17,10 +17,12 @@
 </template>
 
 <script>
-import RegularButton from "./RegularButton.vue";
+import BaseLineGray from "./UiComponents/BaseLineGray.vue";
+import BaseButton from "./UiComponents/BaseButton.vue";
 export default {
   components: {
-    RegularButton,
+    BaseButton,
+    BaseLineGray,
   },
 
   props: {
