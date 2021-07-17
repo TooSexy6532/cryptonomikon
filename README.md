@@ -1,5 +1,10 @@
 # cryptonomikon
 
+Учебный проект по основам Vue.js. State-less приложение без использование библиотек.
+
+
+
+
 ## Project setup
 ```
 npm install
