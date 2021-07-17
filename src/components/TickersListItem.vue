@@ -34,7 +34,7 @@
         ></path></svg
       >Удалить
     </button>
-    <popup-confirmation
+    <PopupConfirmation
       @cansel="toggleModal"
       @confirm="confirm(ticker)"
       v-if="showModal"
@@ -47,12 +47,12 @@
         {{ ticker.name.toUpperCase() }} - USD?<br />
         При удалении будут утеряны все данные о динамике цен из графика!
       </template>
-    </popup-confirmation>
+    </PopupConfirmation>
   </div>
 </template>
 
 <script>
-import PopupConfirmation from "./PopupConfirmation.vue";
+import PopupConfirmation from "./UiComponents/PopupConfirmation.vue";
 export default {
   name: "TickersListItem",
   components: { PopupConfirmation },
